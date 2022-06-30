@@ -1,0 +1,32 @@
+name: Unit Testing
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - extend_mt19937_predictor.py
+      - setup.py
+      - tests/**
+
+jobs:
+  unit_testing:
+    name: unit testing
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        python-version: [ "2.7", "3.7" ]
+    steps:
+      - name: Check out code into the root directory
+        uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip
+
+      - name: Start unit testing
+        run: python setup.py test

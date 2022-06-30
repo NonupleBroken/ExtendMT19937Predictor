@@ -14,6 +14,7 @@ setuptools.setup(
     long_description=README,
     long_description_content_type='text/markdown',
     license='GPLv3',
+    py_modules=['extend_mt19937_predictor'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
@@ -25,5 +26,5 @@ setuptools.setup(
         'Topic :: Security :: Cryptography',
     ],
     url='https://github.com/NonupleBroken/ExtendMT19937Predictor',
-    packages=setuptools.find_packages(),
+    test_suite='tests',
 )
