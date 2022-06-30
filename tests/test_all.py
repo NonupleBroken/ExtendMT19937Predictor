@@ -1,6 +1,7 @@
 import unittest
 import os
 import random
+import sys
 from extend_mt19937_predictor import ExtendMT19937Predictor
 
 
@@ -94,7 +95,6 @@ class PythonStdlibTest(unittest.TestCase):
 
         numbers1 = [random.random() for _ in range(1024)]
         numbers2 = [random.uniform(1, 10) for _ in range(1024)]
-        numbers3 = [random.randbytes(1024) for _ in range(1024)]
 
         predictor = ExtendMT19937Predictor()
 
@@ -103,8 +103,6 @@ class PythonStdlibTest(unittest.TestCase):
 
         _ = [predictor.backtrack_getrandbits(32) for _ in range(1024)]
 
-        for number in numbers3[::-1]:
-            self.assertEqual(predictor.backtrack_randbytes(1024), number)
         for number in numbers2[::-1]:
             self.assertEqual(predictor.backtrack_uniform(1, 10), number)
         for number in numbers1[::-1]:
@@ -114,8 +112,6 @@ class PythonStdlibTest(unittest.TestCase):
             self.assertEqual(predictor.predict_random(), number)
         for number in numbers2:
             self.assertEqual(predictor.predict_uniform(1, 10), number)
-        for number in numbers3:
-            self.assertEqual(predictor.predict_randbytes(1024), number)
 
         _ = [predictor.predict_getrandbits(32) for _ in range(1024)]
 
@@ -126,6 +122,30 @@ class PythonStdlibTest(unittest.TestCase):
         for _ in range(1024):
             self.assertEqual(predictor.predict_uniform(1, 2), random.uniform(1, 2))
         for _ in range(1024):
-            self.assertEqual(predictor.predict_randbytes(1024), predictor.backtrack_randbytes(1024))
-        for _ in range(1024):
             self.assertEqual(predictor.predict_random(), random.random())
+
+    def test_randbytes(self):
+        if sys.version_info[0] == 2:
+            return
+
+        random.seed(os.urandom(32))
+
+        numbers = [random.randbytes(1024) for _ in range(1024)]
+
+        predictor = ExtendMT19937Predictor()
+
+        for _ in range(1024):
+            predictor.setrandbits(random.getrandbits(32), 32)
+
+        _ = [predictor.backtrack_getrandbits(32) for _ in range(1024)]
+
+        for number in numbers[::-1]:
+            self.assertEqual(predictor.backtrack_randbytes(1024), number)
+
+        for number in numbers:
+            self.assertEqual(predictor.predict_randbytes(1024), number)
+
+        _ = [predictor.predict_getrandbits(32) for _ in range(1024)]
+
+        for _ in range(1024):
+            self.assertEqual(predictor.predict_randbytes(512), random.randbytes(512))

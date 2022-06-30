@@ -148,9 +148,15 @@ class ExtendMT19937Predictor(BaseMT19937Predictor):
         """
         Generate n random bytes.
         """
+        if sys.version_info[0] == 2:
+            raise ModuleNotFoundError("python2 does not have randbytes module")
+
         return self.predict_getrandbits(n * 8).to_bytes(n, "little")
 
     def backtrack_randbytes(self, n):
+        if sys.version_info[0] == 2:
+            raise ModuleNotFoundError("python2 does not have randbytes module")
+
         return self.backtrack_getrandbits(n * 8).to_bytes(n, "little")
 
     def _predict_randbelow(self, n):
