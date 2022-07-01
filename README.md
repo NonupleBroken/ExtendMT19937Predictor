@@ -1,5 +1,7 @@
 # Extend MT19937 Predictor
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/NonupleBroken/ExtendMT19937Predictor/Unit%20Testing) ![GitHub](https://img.shields.io/github/license/NonupleBroken/ExtendMT19937Predictor) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/extend-mt19937-predictor) ![PyPI](https://img.shields.io/pypi/v/extend-mt19937-predictor) ![PyPI - Status](https://img.shields.io/pypi/status/extend-mt19937-predictor)
+
 Predict and Backtrack MT19937 PRNG by putting 32 * 624 bits generated numbers.
 
 Python "random" standard library uses mt19937, so we can easily crack it.
@@ -90,7 +92,6 @@ Besides "random" standard library function `getrandbits`, these functions can be
 
 ```
 random
-randbytes
 randrange
 randint
 uniform
@@ -100,7 +101,6 @@ But only these functions can be backtracked, because of cannot determine how man
 
 ```
 random
-randbytes
 uniform
 ```
 
