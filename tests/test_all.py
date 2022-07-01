@@ -116,13 +116,13 @@ class PythonStdlibTest(unittest.TestCase):
         _ = [predictor.predict_getrandbits(32) for _ in range(1024)]
 
         for _ in range(1024):
-            self.assertEqual(predictor.predict_randint(1, 2 ** 32), random.randint(1, 2 ** 32))
-        for _ in range(1024):
-            self.assertEqual(predictor.predict_randrange(1, 2 ** 32), random.randrange(1, 2 ** 32))
-        for _ in range(1024):
-            self.assertEqual(predictor.predict_uniform(1, 2), random.uniform(1, 2))
-        for _ in range(1024):
             self.assertEqual(predictor.predict_random(), random.random())
+        for i in range(1024):
+            self.assertEqual(predictor.predict_uniform(0, i),  random.uniform(0, i))
+        for i in range(1024):
+            self.assertEqual(predictor.predict_randint(0, 2 ** i), random.randint(0, 2 ** i))
+        for i in range(1024):
+            self.assertEqual(predictor.predict_randrange(0, 2 ** i), random.randrange(0, 2 ** i))
 
     def test_randbytes(self):
         if sys.version_info[0] == 2:

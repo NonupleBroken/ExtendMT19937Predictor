@@ -1,3 +1,6 @@
+import sys
+from math import log
+
 N = 624
 M = 397
 MATRIX_A = 0x9908b0df
@@ -165,7 +168,10 @@ class ExtendMT19937Predictor(BaseMT19937Predictor):
         """
         if not n:
             return 0
-        k = n.bit_length()  # don't use (n-1) here because n can be 1
+        if sys.version_info[0] == 2:
+            k = int(1.00001 + log(n - 1, 2.0))
+        else:
+            k = n.bit_length()  # don't use (n-1) here because n can be 1
         r = self.predict_getrandbits(k)  # 0 <= r < 2**k
         while r >= n:
             r = self.predict_getrandbits(k)
@@ -178,9 +184,55 @@ class ExtendMT19937Predictor(BaseMT19937Predictor):
         endpoint; in Python this is usually not what you want.
 
         """
+        if sys.version_info[0] == 2:
+            return self._predict_randrange_py2(start, stop, step)
+        else:
+            return self._predict_randrange_py3(start, stop, step)
 
-        # This code is a bit messy to make it fast for the
-        # common case while still doing adequate error checking.
+    def _predict_randrange_py2(self, start, stop, step):
+        BPF = 53
+        _maxwidth = 1 << BPF
+
+        istart = int(start)
+        if istart != start:
+            raise ValueError("non-integer arg 1 for randrange()")
+        if stop is None:
+            if istart > 0:
+                if istart >= _maxwidth:
+                    return self._predict_randbelow(istart)
+                return int(self.predict_random() * istart)
+            raise ValueError("empty range for randrange()")
+
+        # stop argument supplied.
+        istop = int(stop)
+        if istop != stop:
+            raise ValueError("non-integer stop for randrange()")
+        width = istop - istart
+        if step == 1 and width > 0:
+            if width >= _maxwidth:
+                return int(istart + self._predict_randbelow(width))
+            return int(istart + int(self.predict_random() * width))
+        if step == 1:
+            raise ValueError("empty range for randrange() (%d,%d, %d)" % (istart, istop, width))
+
+        istep = int(step)
+        if istep != step:
+            raise ValueError("non-integer step for randrange()")
+        if istep > 0:
+            n = (width + istep - 1) // istep
+        elif istep < 0:
+            n = (width + istep + 1) // istep
+        else:
+            raise ValueError("zero step for randrange()")
+
+        if n <= 0:
+            raise ValueError("empty range for randrange()")
+
+        if n >= _maxwidth:
+            return istart + istep * self._predict_randbelow(n)
+        return istart + istep * int(self.predict_random() * n)
+
+    def _predict_randrange_py3(self, start, stop, step):
         istart = int(start)
         if istart != start:
             raise ValueError("non-integer arg 1 for randrange()")
@@ -189,7 +241,6 @@ class ExtendMT19937Predictor(BaseMT19937Predictor):
                 return self._predict_randbelow(istart)
             raise ValueError("empty range for randrange()")
 
-        # stop argument supplied.
         istop = int(stop)
         if istop != stop:
             raise ValueError("non-integer stop for randrange()")
@@ -199,7 +250,6 @@ class ExtendMT19937Predictor(BaseMT19937Predictor):
         if step == 1:
             raise ValueError("empty range for randrange() (%d, %d, %d)" % (istart, istop, width))
 
-        # Non-unit step argument supplied.
         istep = int(step)
         if istep != step:
             raise ValueError("non-integer step for randrange()")
