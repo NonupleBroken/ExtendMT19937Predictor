@@ -147,21 +147,6 @@ class ExtendMT19937Predictor(BaseMT19937Predictor):
         a = self._backtrack_getrand_int32() >> 5
         return (a * 67108864.0 + b) * (1.0 / 9007199254740992.0)
 
-    def predict_randbytes(self, n):
-        """
-        Generate n random bytes.
-        """
-        if sys.version_info[0] == 2:
-            raise ModuleNotFoundError("python2 does not have randbytes module")
-
-        return self.predict_getrandbits(n * 8).to_bytes(n, "little")
-
-    def backtrack_randbytes(self, n):
-        if sys.version_info[0] == 2:
-            raise ModuleNotFoundError("python2 does not have randbytes module")
-
-        return self.backtrack_getrandbits(n * 8).to_bytes(n, "little")
-
     def _predict_randbelow(self, n):
         """
         Return a random int in the range [0,n).  Returns 0 if n==0.
