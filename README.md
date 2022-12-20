@@ -1,6 +1,6 @@
 # Extend MT19937 Predictor
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/NonupleBroken/ExtendMT19937Predictor/Unit%20Testing) ![GitHub](https://img.shields.io/github/license/NonupleBroken/ExtendMT19937Predictor) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/extend-mt19937-predictor) ![PyPI](https://img.shields.io/pypi/v/extend-mt19937-predictor) ![PyPI - Status](https://img.shields.io/pypi/status/extend-mt19937-predictor)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/NonupleBroken/ExtendMT19937Predictor/unit_testing.yaml?branch=main) ![GitHub](https://img.shields.io/github/license/NonupleBroken/ExtendMT19937Predictor) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/extend-mt19937-predictor) ![PyPI](https://img.shields.io/pypi/v/extend-mt19937-predictor) ![PyPI - Status](https://img.shields.io/pypi/status/extend-mt19937-predictor)
 
 Predict and Backtrack MT19937 PRNG by putting 32 * 624 bits generated numbers.
 
